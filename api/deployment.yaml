@@ -1,0 +1,28 @@
+# kubernetes deployment file
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: api-deployment
+
+spec:
+  replicas: 3
+
+  selector:
+    matchLabels:
+      server: api-label
+
+  template:
+    metadata:
+      labels:
+        server: api-label
+    spec:
+      containers:
+        - name: practice-exress-api
+          image: practice-exress-api:v2  # docker images  | grep api
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 9000
+          env:
+            - name: NODE_ENV
+              value: production

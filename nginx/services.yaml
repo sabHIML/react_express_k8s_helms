@@ -1,0 +1,14 @@
+# kubernetes service file
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: nginx-service
+
+spec:
+  type: LoadBalancer
+  selector:
+    server: nginx-label # talk to the deployment with this label
+  ports:
+    - port: 80
+      targetPort: 80 # This is the port of the deployment

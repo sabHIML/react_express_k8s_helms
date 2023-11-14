@@ -1,27 +1,77 @@
-# React_Express_App_Medium_Tutorial
-- This repository has the code to support a tutorial that I created on Medium called Create a React FrontEnd, a Node/Express BackEnd and connect them together.
-- This repository can also be used as a starting point (boilerplate), if you whant to create your own React/Express app.
-.
-
-## Where can I check the tutorial?
-You are very welcome to check the tutorial on Medium. Just follow the link below.
-- [Create a React FrontEnd, a Node/Express BackEnd and connect them together](https://medium.com/@jrshenrique/create-a-react-frontend-a-node-express-backend-and-connect-them-together-c5798926047c)
-
-## About the app
-Actually, there are two separated apps. The Client which serves the FrontEnd (using React), and the API (in Node/Express).
 
 ## How to run the API
-1. In your terminal, navigate to the `api` directory.
-2. Run `npm install` to install all dependencies.
-3. Run `npm start` to start the app.
+`docker build ./api -f api/Dockerfile -t practice-exress-api:v1`
+
+`docker run -d -p9001:9000 --name express-api  practice-exress-api:v1` (first time)
+
+`docker start express-api` (later on)
+
+Check http://localhost:9001
+
+#### Into container:
+`docker exec -it express-api sh`
+
+#### Logs:
+`docker logs express-api`
 
 ## How to run the Client
-1. In another terminal, navigate to the `client` directory.
-2. Run `npm install` to install all dependencies.
-3. Run `npm start` to start the app
+`docker build ./client -f client/Dockerfile -t practice-react-client:v1`
+
+`docker run -d -p3001:3000 --name react-client  practice-react-client:v1`
+
+`docker start react-client` (later on)
+
+Check http://localhost:3001
+
+#### Into container:
+`docker exec -it react-client sh`
+
+#### Logs:
+`docker logs react-client`
 
 ## Check if they are connected
-1. With the two apps running, open your browser in http://localhost:3000/.
+1. With the two apps running, open browser in http://localhost:3001.
 2. If you see a webpage saying `Welcome to React`, it means the FrontEnd is working.
 3. If the same webpage has the phrase `API is working properly`, it means the API is working.
 4. Enjoy!
+
+
+### How to run the nginx
+`docker build ./nginx -f nginx/Dockerfile -t practice-nginx:v1`
+
+`docker run -d --p8090:80 --name nginx practice-nginx:v1`
+
+`docker start practice-nginx` (later on)
+
+
+### Minikube
+
+`minikube start -p himel-local-profile --driver=docker`
+
+`minikube dashboard -p himel-local-profile`
+
+`eval $(minikube docker-env -p himel-local-profile)`
+
+Run the above docker build commands again in cluster. otherwise cluster will not find the images.
+
+## apply deployment and service files
+cd to each of 3 service and run the following commands on each:
+
+`kubectl apply -f <service>/deployment.yaml`
+
+`kubectl apply -f <service>/services.yaml`
+
+#### Check services and deployments with:
+`kubectl get services`
+`kubectl get deployments`
+
+#### Access each service with:
+`kubectl exec -it svc/<service-name> sh`
+
+## Allocate LoadBalancer external ip for nginx service
+
+`minikube service nginx-service -p himel-local-profile`
+
+## Replace localhost url with service name in api calls and nginx config
+then run all build commands again with new version.
+
